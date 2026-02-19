@@ -29,6 +29,8 @@ except Exception:
     Mangum = None
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+STATIC_DIR = BASE_DIR / "static"
+TEMPLATES_DIR = BASE_DIR / "templates"
 
 app = FastAPI(title="Nandi RPi Config (Vercel)")
 app.add_middleware(
@@ -38,8 +40,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR)) if TEMPLATES_DIR.exists() else None
 
 
 def _bucket_or_raise() -> str:
@@ -194,11 +198,21 @@ async def _reset_action_after_delay(device: str, delay_seconds: int) -> None:
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request) -> HTMLResponse:
+    if templates is None:
+        return HTMLResponse(
+            "<h3 style='font-family:sans-serif'>Template directory not found in deployment bundle.</h3>",
+            status_code=500,
+        )
     return templates.TemplateResponse("rpi_config.html", {"request": request})
 
 
 @app.get("/rpi-config", response_class=HTMLResponse)
 async def rpi_config_page(request: Request) -> HTMLResponse:
+    if templates is None:
+        return HTMLResponse(
+            "<h3 style='font-family:sans-serif'>Template directory not found in deployment bundle.</h3>",
+            status_code=500,
+        )
     return templates.TemplateResponse("rpi_config.html", {"request": request})
 
 
