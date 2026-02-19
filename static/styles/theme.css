@@ -1,0 +1,706 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+:root {
+  --pa-bg-ink: #0d1b1e;
+  --pa-bg-deep: #152e33;
+  --pa-card: #ffffff;
+  --pa-border: #d9e4de;
+  --pa-text: #13231f;
+  --pa-text-soft: #5a6d65;
+  --pa-primary: #0aa354;
+  --pa-primary-strong: #087a3f;
+  --pa-secondary: #a35244;
+  --pa-panel: #edf5f0;
+  --pa-shadow: 0 18px 45px rgba(11, 33, 24, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.peepul-theme {
+  margin: 0;
+  color: var(--pa-text);
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  min-height: 100dvh;
+  overflow: auto !important;
+  background:
+    radial-gradient(1200px 500px at 8% -10%, rgba(10, 163, 84, 0.22), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgba(163, 82, 68, 0.18), transparent 52%),
+    linear-gradient(180deg, #f6fbf8 0%, #edf4f0 100%);
+}
+
+body.peepul-theme {
+  --bg: #eef5f1;
+  --card: #ffffff;
+  --muted: #5d756c;
+  --accent: #0aa354;
+  --success: #0f8a4b;
+  --warn: #b7791f;
+  --danger: #c53030;
+  --glass: rgba(255, 255, 255, 0.92);
+}
+
+.peepul-theme .app,
+.peepul-theme #dashboard-view {
+  animation: pageFadeIn 0.34s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-logo-lg,
+.brand-logo-md,
+.brand-logo-sm {
+  display: block;
+  object-fit: contain;
+}
+
+.brand-logo-lg {
+  width: 164px;
+  height: auto;
+  margin: 0 auto 10px;
+}
+
+.brand-logo-md {
+  width: 128px;
+  height: auto;
+}
+
+.brand-logo-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.brand-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pa-primary);
+  font-weight: 700;
+  display: none;
+}
+
+.peepul-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-shell {
+  width: 100%;
+  max-width: 430px;
+  border: 1px solid var(--pa-border);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: var(--pa-shadow);
+  color: var(--pa-text);
+  padding: 34px 30px;
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-title {
+  margin: 0;
+  font-size: 1.8rem;
+  line-height: 1.15;
+  color: var(--pa-text);
+}
+
+.login-subtitle {
+  margin-top: 8px;
+  margin-bottom: 0;
+  color: var(--pa-text-soft);
+  font-size: 0.92rem;
+}
+
+.login-form-group {
+  margin-bottom: 18px;
+}
+
+.login-form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #4f645d;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.login-input {
+  width: 100%;
+  border: 1px solid #c6d8cf;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #1f302a;
+  background: #f9fcfa;
+}
+
+.login-input::placeholder {
+  color: #7b8f86;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--pa-primary);
+  box-shadow: 0 0 0 3px rgba(10, 163, 84, 0.25);
+}
+
+.login-password-wrap {
+  position: relative;
+}
+
+.login-password-wrap .login-input {
+  padding-right: 72px;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #c6d8cf;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2d4a40;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.login-password-toggle:hover {
+  background: #f2faf6;
+}
+
+.login-submit {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--pa-primary), #079a4f);
+  cursor: pointer;
+}
+
+.login-submit:hover {
+  background: linear-gradient(135deg, var(--pa-primary-strong), #06723a);
+}
+
+.login-error {
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 117, 117, 0.45);
+  background: rgba(180, 35, 35, 0.2);
+  border-radius: 10px;
+  color: #000000;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-footer {
+  margin-top: 18px;
+  font-size: 0.74rem;
+  color: #6f857b;
+  text-align: center;
+}
+
+.peepul-theme .fleet-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.peepul-theme .fleet-title-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 10px;
+}
+
+.peepul-theme .fleet-title-name {
+  color: #24453a;
+  font-size: 0.96rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.peepul-theme .vehicle-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid #cbddd4;
+  border-radius: 8px;
+  background: #f7fcf8;
+}
+
+.peepul-theme .vehicle-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52796a;
+  font-weight: 700;
+}
+
+.peepul-theme header {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #d9e6df;
+  box-shadow: 0 4px 16px rgba(39, 62, 50, 0.08);
+}
+
+.peepul-theme aside {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #d9e6df;
+  box-shadow: 0 4px 16px rgba(39, 62, 50, 0.08);
+}
+
+.peepul-theme .card-group,
+.peepul-theme .metric {
+  background: #ffffff !important;
+  border: 1px solid #dbe8e1;
+}
+
+.peepul-theme .card-title,
+.peepul-theme .metric,
+.peepul-theme .metric span {
+  color: #3f5a50 !important;
+}
+
+.peepul-theme .metric .value,
+.peepul-theme aside .value,
+.peepul-theme #socText,
+.peepul-theme #batEnergy,
+.peepul-theme #socP1,
+.peepul-theme #socP2,
+.peepul-theme #gearText,
+.peepul-theme #speed,
+.peepul-theme #rpm,
+.peepul-theme #odo,
+.peepul-theme #drive,
+.peepul-theme #sprayText,
+.peepul-theme #gpsDist {
+  color: #1e352d !important;
+}
+
+.peepul-theme #sprayDist {
+  color: #0f8a4b !important;
+}
+
+.peepul-theme aside [style*="color: #fff"] {
+  color: #1e352d !important;
+}
+
+.peepul-theme aside [style*="background: rgba(255,255,255,0.03)"] {
+  background: #f6fbf8 !important;
+}
+
+.peepul-theme #modeBadge {
+  background: #e8f4ee !important;
+  color: #1f3f34 !important;
+}
+
+.peepul-theme .diag-btn {
+  background: #3f4d63 !important;
+  border-color: #55657d !important;
+  color: #ffffff !important;
+}
+
+.peepul-theme .download-btn {
+  background: #0f8a4b !important;
+  border-color: #0f8a4b !important;
+  color: #ffffff !important;
+}
+
+.peepul-theme .status-indicator.connected {
+  background: rgba(15, 138, 75, 0.12);
+  color: #16643b;
+  border-color: rgba(15, 138, 75, 0.25);
+}
+
+.peepul-theme .status-indicator.disconnected {
+  background: rgba(183, 121, 31, 0.12);
+  color: #8a5e14;
+  border-color: rgba(183, 121, 31, 0.28);
+}
+
+.peepul-theme .status-indicator.offline {
+  background: rgba(197, 48, 48, 0.1);
+  color: #982626;
+  border-color: rgba(197, 48, 48, 0.28);
+}
+
+.peepul-theme .status-indicator .status-dot {
+  opacity: 0.9;
+}
+
+.peepul-theme .vehicle-select {
+  color: #1b302a !important;
+  border-color: #a7c4b6 !important;
+  background: #ffffff !important;
+}
+
+.peepul-theme .vehicle-select option {
+  color: #1b302a !important;
+  background: #ffffff !important;
+}
+
+.peepul-theme .overview-btn {
+  background: linear-gradient(135deg, #0b8a7c, #0d6c62);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.peepul-theme .overview-btn:hover {
+  background: linear-gradient(135deg, #0c7267, #09574f);
+}
+
+.peepul-theme .leaflet-control-attribution {
+  display: none !important;
+}
+
+.peepul-theme .btn-live-nav,
+.peepul-theme .overview-btn,
+.peepul-theme .download-btn,
+.peepul-theme .diag-btn,
+.peepul-theme .btn-primary,
+.peepul-theme .btn-success,
+.peepul-theme .btn-sm,
+.peepul-theme .map-btn,
+.peepul-theme .tool-btn,
+.peepul-theme .btn-upload {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  border-width: 1px !important;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.peepul-theme .btn-live-nav,
+.peepul-theme .overview-btn,
+.peepul-theme .download-btn,
+.peepul-theme .btn-primary,
+.peepul-theme .btn-success,
+.peepul-theme .btn-upload {
+  box-shadow: 0 4px 12px rgba(18, 45, 35, 0.18);
+}
+
+.peepul-theme .btn-live-nav:hover,
+.peepul-theme .overview-btn:hover,
+.peepul-theme .download-btn:hover,
+.peepul-theme .diag-btn:hover,
+.peepul-theme .btn-primary:hover,
+.peepul-theme .btn-success:hover,
+.peepul-theme .map-btn:hover,
+.peepul-theme .tool-btn:hover,
+.peepul-theme .btn-upload:hover {
+  transform: translateY(-1px);
+}
+
+.peepul-theme .btn-live-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f8a4b, #0b6f3c);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.peepul-theme .btn-live-nav:hover {
+  background: linear-gradient(135deg, #0c7640, #095f33);
+}
+
+.peepul-theme .modal-overlay {
+  background: rgba(7, 15, 12, 0.46) !important;
+  backdrop-filter: blur(3px);
+}
+
+.peepul-theme .modal-card {
+  background: #ffffff !important;
+  border: 1px solid #d7e5de !important;
+  color: #1a3028 !important;
+  box-shadow: 0 18px 45px rgba(22, 44, 36, 0.2);
+}
+
+.peepul-theme .modal-header {
+  background: #f2f8f5 !important;
+  border-bottom: 1px solid #d7e5de !important;
+}
+
+.peepul-theme .modal-header,
+.peepul-theme .modal-header * {
+  color: #1a3028 !important;
+}
+
+.peepul-theme .diag-group {
+  background: #f8fcfa !important;
+  border: 1px solid #dbe9e2 !important;
+}
+
+.peepul-theme .diag-group h3 {
+  color: #0f8a4b !important;
+  border-bottom-color: #dbe9e2 !important;
+}
+
+.peepul-theme .diag-item,
+.peepul-theme .diag-label {
+  color: #4a6258 !important;
+}
+
+.peepul-theme .diag-val {
+  color: #18372d !important;
+}
+
+.peepul-theme #overviewNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.peepul-theme #upload-view {
+  background:
+    radial-gradient(720px 300px at 10% 5%, rgba(10, 163, 84, 0.19), transparent 58%),
+    radial-gradient(700px 360px at 95% 0%, rgba(163, 82, 68, 0.13), transparent 52%),
+    linear-gradient(180deg, #eff7f2 0%, #e5efe9 100%);
+}
+
+.peepul-theme .upload-card {
+  border: 1px solid var(--pa-border);
+  box-shadow: var(--pa-shadow);
+}
+
+.peepul-theme .upload-header {
+  margin-bottom: 18px;
+}
+
+.peepul-theme .upload-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.peepul-theme .upload-brand-copy {
+  text-align: left;
+}
+
+.peepul-theme .upload-brand-copy h1 {
+  margin: 0;
+}
+
+.peepul-theme .sidebar-header {
+  gap: 10px;
+}
+
+.peepul-theme .sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.peepul-theme .sidebar-brand-copy h2 {
+  margin: 0;
+}
+
+.peepul-theme .sidebar-brand-copy .brand-eyebrow {
+  color: #3a8f64;
+}
+
+.peepul-theme .sidebar-brand .brand-logo-sm {
+  background: #edf5f0;
+  border-color: #d4e4db;
+}
+
+.peepul-theme .sidebar-header button {
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .peepul-theme #dashboard-view {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .peepul-theme .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--pa-border);
+  }
+
+  .peepul-theme .main-content {
+    min-height: 60vh;
+  }
+}
+
+@media (max-width: 900px) {
+  .peepul-theme .app {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(38vh, 45vh) auto !important;
+    grid-template-areas:
+      "header"
+      "map"
+      "sidebar" !important;
+    height: auto !important;
+    min-height: 100dvh;
+    overflow: auto;
+  }
+
+  .peepul-theme .app > header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .peepul-theme .app > header h1 {
+    width: 100%;
+    justify-content: space-between !important;
+    gap: 8px;
+  }
+
+  .peepul-theme .app > header > div {
+    width: 100%;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .peepul-theme .status-indicator {
+    flex: 1;
+    min-width: 190px;
+    justify-content: center;
+  }
+
+  .peepul-theme #map {
+    min-height: 42vh !important;
+    height: 42vh !important;
+  }
+
+  .peepul-theme aside {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .peepul-theme .upload-card {
+    max-width: 96vw;
+    padding: 26px 20px;
+  }
+
+  .peepul-theme .nav-tab {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+
+  .peepul-theme .fleet-title {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .peepul-theme .vehicle-picker {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .peepul-theme .vehicle-picker .vehicle-select {
+    max-width: none;
+    flex: 1;
+  }
+
+  .peepul-theme .login-shell {
+    padding: 28px 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .peepul-theme .fleet-title {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .peepul-theme .vehicle-picker {
+    width: 100%;
+  }
+
+  .peepul-theme .vehicle-picker .vehicle-select {
+    flex: 1;
+    max-width: none;
+  }
+
+  .peepul-theme .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px;
+  }
+
+  .peepul-theme .metric {
+    min-width: 0;
+  }
+
+  .peepul-theme .status-indicator {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .peepul-theme .map-controls {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    gap: 6px !important;
+    flex-wrap: wrap;
+  }
+
+  .peepul-theme .map-controls .map-btn {
+    flex: 1 1 30%;
+    min-width: 84px;
+  }
+
+  .peepul-theme .upload-brand {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .peepul-theme .upload-brand-copy {
+    text-align: center;
+  }
+
+  .peepul-theme .brand-logo-md {
+    width: 110px;
+  }
+}
