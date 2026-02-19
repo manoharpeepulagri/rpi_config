@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Nandi RPi Config </title>
+  <link rel="stylesheet" href="/static/styles/theme.css" />
+  <style>
+    :root {
+      --rpi-bg: #edf1ee;
+      --rpi-frame: #f7faf8;
+      --rpi-surface: #ffffff;
+      --rpi-soft: #f2f7f4;
+      --rpi-border: #cfd9d3;
+      --rpi-strong-border: #192720;
+      --rpi-ink: #163128;
+      --rpi-muted: #5f766c;
+      --rpi-accent: #0d8e4e;
+      --rpi-accent-2: #4d8df7;
+      --rpi-danger: #d86a6a;
+      --rpi-warning: #ddb26a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.peepul-theme {
+      min-height: 100dvh;
+      margin: 0;
+      overflow: auto;
+      color: var(--rpi-ink);
+      background:
+        radial-gradient(1000px 420px at 8% -8%, rgba(10, 163, 84, 0.16), transparent 56%),
+        radial-gradient(900px 380px at 100% 0%, rgba(163, 82, 68, 0.12), transparent 50%),
+        linear-gradient(180deg, #f4faf7 0%, #e9f1ed 100%);
+      font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    }
+
+    .shell {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .header {
+      background: var(--rpi-surface);
+      border: 1px solid #d2dfd8;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 16px rgba(39, 62, 50, 0.08);
+    }
+
+    .title-wrap {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .title-main {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #1a3a30;
+    }
+
+    .title-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.7rem;
+      color: var(--rpi-muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .header-actions {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link,
+    .nav-link-alt {
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .nav-link {
+      color: #ffffff;
+      background: linear-gradient(135deg, #10854c, #0c6e3e);
+      border: 1px solid #0a6538;
+    }
+
+    .nav-link-alt {
+      color: #18251f;
+      background: #ffffff;
+      border: 1px solid #8ea79c;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .rail {
+      background: var(--rpi-surface);
+      border: 1px solid #d2dfd8;
+      border-radius: 12px;
+      padding: 8px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      min-height: calc(100dvh - 126px);
+      box-shadow: 0 6px 16px rgba(39, 62, 50, 0.07);
+    }
+
+    .rail-section {
+      border: 1px solid var(--rpi-border);
+      background: var(--rpi-soft);
+      border-radius: 6px;
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .rail-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #60766c;
+      font-weight: 700;
+    }
+
+    .rail-note {
+      font-size: 0.7rem;
+      color: #4f645c;
+      line-height: 1.35;
+    }
+
+    .rail-meta {
+      font-size: 0.68rem;
+      color: #49695c;
+    }
+
+    .rail-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #27443a;
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    .rail-file-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid #c8d6cf;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #244137;
+      padding: 6px 7px;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .rail-file-btn.active {
+      border-color: #1da25b;
+      background: #ebf8f1;
+      color: #0e6f3d;
+      font-weight: 700;
+    }
+
+    .rail-controls {
+      display: grid;
+      gap: 8px;
+    }
+
+    .file-tools {
+      display: grid;
+      gap: 6px;
+    }
+
+    .file-tools .inline-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-create {
+      background: #4b9f79;
+      border-color: #3f8464;
+      min-width: 74px;
+    }
+
+    .btn-upload {
+      background: #4f87bf;
+      border-color: #406d99;
+      min-width: 74px;
+    }
+
+    .btn-delete {
+      background: #c86464;
+      border-color: #a44f4f;
+      width: 100%;
+    }
+
+    .file-upload-input {
+      width: 100%;
+      font-size: 0.7rem;
+      color: #385248;
+    }
+
+    .rail-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .rail-actions .btn-parse {
+      grid-column: 1 / -1;
+    }
+
+    .main-pane {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .field label {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #5f766d;
+      font-weight: 700;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid #c3d1ca;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #213730;
+      background: #fbfdfc;
+      font-family: inherit;
+    }
+
+    select:focus, input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #20a45e;
+      box-shadow: 0 0 0 2px rgba(32, 164, 94, 0.18);
+    }
+
+    .btn-row {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.69rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      transition: filter 0.14s ease;
+    }
+
+    button:hover { filter: brightness(0.96); }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    .btn-load { background: #5e94f8; border-color: #477bdd; }
+    .btn-parse { background: #76a8d1; border-color: #5e8eb4; }
+    .btn-save { background: #6dbf95; border-color: #58a67f; }
+    .btn-reboot { background: var(--rpi-warning); border-color: #be9550; color: #314137; }
+    .btn-shutdown { background: var(--rpi-danger); border-color: #bd5858; }
+
+    .status-bar {
+      background: var(--rpi-surface);
+      border: 1px solid var(--rpi-border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr;
+      gap: 10px;
+      font-size: 0.72rem;
+    }
+
+    .status-item strong {
+      color: #213b31;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .status-text {
+      font-weight: 700;
+      color: #49695c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .studio {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 10px;
+    }
+
+    .card {
+      background: var(--rpi-surface);
+      border: 1px solid var(--rpi-border);
+      border-radius: 10px;
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      padding: 8px;
+    }
+
+    .card-title {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #5a7167;
+      font-weight: 700;
+    }
+
+    .search-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-table-edit {
+      background: #53687b;
+      border-color: #4a5c6d;
+      min-width: 84px;
+      padding: 7px 9px;
+    }
+
+    .btn-table-edit.active {
+      background: #1d8f51;
+      border-color: #177043;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--rpi-border);
+      border-radius: 8px;
+      background: #fff;
+      min-height: 130px;
+      max-height: 320px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.67rem;
+      min-width: 760px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #edf4f0;
+      color: #3b5a4e;
+      border-bottom: 1px solid var(--rpi-border);
+      padding: 6px 7px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      border-bottom: 1px solid #e6eee9;
+      padding: 6px 7px;
+      color: #254035;
+      white-space: nowrap;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    tbody tr:hover { background: #f5fbf7; }
+    tbody tr.selected {
+      background: #d9ecff;
+      outline: 1px solid #8bc5ff;
+    }
+    tbody tr.selected-signal {
+      background: #f0fbf4;
+      outline: 1px solid #97cfac;
+    }
+
+    td.editable {
+      background: #fffaf0;
+      outline: 1px dashed #c6cfd3;
+      cursor: text;
+    }
+
+    .studio-bottom {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .bit-grid-wrap {
+      overflow: auto;
+      border: 1px solid var(--rpi-border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+
+    .bit-grid {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed;
+      font-size: 0.66rem;
+      min-width: 200px;
+    }
+
+    .bit-grid th, .bit-grid td {
+      border: 1px solid #d7e3dc;
+      text-align: center;
+      height: 24px;
+      padding: 0;
+    }
+
+    .bit-grid th {
+      background: #edf4f0;
+      color: #345548;
+      font-weight: 700;
+    }
+
+    .bit-empty { background: #fbfdfc; }
+    .bit-used { background: #d7f0df; }
+    .bit-focus {
+      background: #ffe8ac !important;
+      outline: 1px solid #e2b43f;
+    }
+    .byte-focus {
+      background: #fff4d1 !important;
+      color: #7d5b08 !important;
+    }
+
+    .editor {
+      display: grid;
+      gap: 8px;
+    }
+
+    .editor textarea {
+      min-height: 44vh;
+      resize: vertical;
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.5;
+      font-size: 0.76rem;
+      background: #f9fcfa;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1240px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .rail {
+        min-height: auto;
+        grid-template-rows: auto auto auto;
+      }
+    }
+
+    @media (max-width: 1060px) {
+      .status-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .studio {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        max-height: 300px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .search-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .rail-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .rail-actions .btn-parse {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body class="peepul-theme">
+  <div class="shell">
+    <section class="header">
+      <div class="title-wrap">
+        <img src="/static/assets/Peepul_Agri_Final_Logo.png" alt="Peepul Agri logo" class="brand-logo-sm">
+        <div>
+          <div class="title-main">Nandi RPi Config</div>
+          <span class="title-sub">RPI- AWS S3  config</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="nav-link" href="/">Back to Live Dashboard</a>
+        <a class="nav-link-alt" href="/overview">overview analytics</a>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="rail">
+        <div class="rail-section">
+          <div class="field">
+            <div class="rail-label">Device</div>
+            <select id="deviceSelect"></select>
+          </div>
+        </div>
+
+        <div class="rail-section">
+          <div class="rail-label">Actions</div>
+          <div class="rail-controls">
+            <div class="rail-actions">
+              <button type="button" id="loadBtn" class="btn-load">Load</button>
+              <button type="button" id="saveBtn" class="btn-save">Save</button>
+              <button type="button" id="parseBtn" class="btn-parse">Refresh DBC View</button>
+              <button type="button" id="rebootBtn" class="btn-reboot">Reboot</button>
+              <button type="button" id="shutdownBtn" class="btn-shutdown">Shutdown</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rail-section">
+          <div class="rail-label">Config Files</div>
+          <div class="rail-note">Click a file below to load directly.</div>
+          <div id="railFilesMeta" class="rail-meta">Loading files...</div>
+          <ul id="railFileList" class="rail-list"></ul>
+          <div class="file-tools">
+            <div class="rail-label">File Management</div>
+            <div class="inline-row">
+              <input id="newFileName" type="text" placeholder="new_file.ext">
+              <button type="button" id="createFileBtn" class="btn-create">Create</button>
+            </div>
+            <div class="inline-row">
+              <input id="uploadFileInput" class="file-upload-input" type="file">
+              <button type="button" id="uploadFileBtn" class="btn-upload">Upload</button>
+            </div>
+            <button type="button" id="deleteFileBtn" class="btn-delete">Delete Selected</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-pane">
+        <select id="fileSelect" style="display:none;" aria-hidden="true" tabindex="-1"></select>
+
+        <section class="status-bar">
+          <div class="status-item status-text" id="statusText">Select a device and load a config file.</div>
+          <div class="status-item" id="activeKey"><strong>S3 Key:</strong>-</div>
+          <div class="status-item" id="lastModified"><strong>Last Modified:</strong>-</div>
+        </section>
+
+        <section id="dbcStudio" class="studio">
+          <div class="studio-bottom">
+            <div class="card">
+              <div class="card-title">CAN Messages</div>
+              <div class="search-toolbar">
+                <input id="messageSearch" type="text" placeholder="Search message by name, id, tx node">
+                <button type="button" id="toggleMessageEditBtn" class="btn-table-edit">Edit</button>
+              </div>
+              <div class="table-wrap">
+                <table id="messageTable">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>ID Decimal</th>
+                      <th>ID HEX</th>
+                      <th>Frame Format</th>
+                      <th>BRS</th>
+                      <th>DLC</th>
+                      <th>TX Node</th>
+                      <th>Comment</th>
+                      <th>Attributes</th>
+                    </tr>
+                  </thead>
+                  <tbody id="messageTbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Signals Of Selected CAN Message</div>
+              <div class="search-toolbar">
+                <input id="signalSearch" type="text" placeholder="Search selected message signals">
+                <button type="button" id="toggleSignalEditBtn" class="btn-table-edit">Edit</button>
+              </div>
+              <div class="table-wrap">
+                <table id="signalTable">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Byteorder</th>
+                      <th>Mode</th>
+                      <th>Bitpos</th>
+                      <th>Length</th>
+                      <th>Factor</th>
+                      <th>Offset</th>
+                      <th>Minimum</th>
+                      <th>Maximum</th>
+                      <th>Unit</th>
+                      <th>Comment</th>
+                      <th>Values</th>
+                    </tr>
+                  </thead>
+                  <tbody id="signalTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Bit Positions</div>
+            <div class="bit-grid-wrap">
+              <table class="bit-grid" id="bitGrid"></table>
+            </div>
+          </div>
+        </section>
+
+        <section class="card editor">
+          <div class="card-title">Raw Config Editor</div>
+          <textarea id="editor" spellcheck="false" placeholder="Loaded file content appears here. Edit and click Save."></textarea>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    const deviceSelect = document.getElementById("deviceSelect");
+    const fileSelect = document.getElementById("fileSelect");
+    const loadBtn = document.getElementById("loadBtn");
+    const parseBtn = document.getElementById("parseBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const rebootBtn = document.getElementById("rebootBtn");
+    const shutdownBtn = document.getElementById("shutdownBtn");
+    const editor = document.getElementById("editor");
+    const statusText = document.getElementById("statusText");
+    const activeKey = document.getElementById("activeKey");
+    const lastModified = document.getElementById("lastModified");
+    const dbcStudio = document.getElementById("dbcStudio");
+    const messageSearch = document.getElementById("messageSearch");
+    const signalSearch = document.getElementById("signalSearch");
+    const toggleMessageEditBtn = document.getElementById("toggleMessageEditBtn");
+    const toggleSignalEditBtn = document.getElementById("toggleSignalEditBtn");
+    const messageTbody = document.getElementById("messageTbody");
+    const signalTbody = document.getElementById("signalTbody");
+    const bitGrid = document.getElementById("bitGrid");
+    const railFileList = document.getElementById("railFileList");
+    const railFilesMeta = document.getElementById("railFilesMeta");
+    const newFileNameInput = document.getElementById("newFileName");
+    const createFileBtn = document.getElementById("createFileBtn");
+    const uploadFileInput = document.getElementById("uploadFileInput");
+    const uploadFileBtn = document.getElementById("uploadFileBtn");
+    const deleteFileBtn = document.getElementById("deleteFileBtn");
+
+    const state = {
+      messages: [],
+      signalsByMessage: {},
+      selectedMessageName: "",
+      selectedSignalIndex: -1,
+      messageEditMode: false,
+      signalEditMode: false,
+      files: [],
+      filesCount: 0,
+      filesTruncated: false,
+      loadingFiles: false,
+      loading: false,
+    };
+
+    function isDbcFile() {
+      return String(fileSelect.value || "").toLowerCase().endsWith(".dbc");
+    }
+
+    function setStatus(message, tone = "info") {
+      statusText.textContent = message;
+      if (tone === "ok") statusText.style.color = "#15643a";
+      else if (tone === "warn") statusText.style.color = "#8a5e14";
+      else if (tone === "error") statusText.style.color = "#9b2727";
+      else statusText.style.color = "#446b5d";
+    }
+
+    function setBusy(isBusy) {
+      state.loading = isBusy;
+      [loadBtn, parseBtn, saveBtn, rebootBtn, shutdownBtn, deviceSelect, fileSelect, toggleMessageEditBtn, toggleSignalEditBtn].forEach((btn) => {
+        if (!btn) return;
+        btn.disabled = isBusy;
+      });
+      [createFileBtn, uploadFileBtn, deleteFileBtn, newFileNameInput, uploadFileInput].forEach((el) => {
+        if (!el) return;
+        el.disabled = isBusy;
+      });
+    }
+
+    async function fetchJson(url, options = {}) {
+      const timeoutMs = Number(options.timeoutMs || 20000);
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+      const fetchOptions = { ...options };
+      delete fetchOptions.timeoutMs;
+      if (!fetchOptions.signal) fetchOptions.signal = controller.signal;
+
+      let res;
+      try {
+        res = await fetch(url, { credentials: "same-origin", ...fetchOptions });
+      } catch (error) {
+        if (error && error.name === "AbortError") {
+          throw new Error("Request timed out.");
+        }
+        throw error;
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+      let payload = {};
+      try {
+        payload = await res.json();
+      } catch (error) {
+        payload = {};
+      }
+      if (!res.ok) {
+        throw new Error(payload.error || payload.message || "Request failed");
+      }
+      return payload;
+    }
+
+    function textIncludes(source, query) {
+      return String(source || "").toLowerCase().includes(String(query || "").toLowerCase());
+    }
+
+    function esc(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function coerceEditableValue(field, rawText, currentValue) {
+      const text = String(rawText ?? "").trim();
+      if (field === "brs") {
+        const lowered = text.toLowerCase();
+        if (["1", "true", "yes", "on", "y"].includes(lowered)) return true;
+        if (["0", "false", "no", "off", "n", "---", ""].includes(lowered)) return false;
+        return Boolean(currentValue);
+      }
+
+      if (["id_decimal", "dlc", "bitpos", "length"].includes(field)) {
+        const value = Number.parseInt(text, 10);
+        return Number.isFinite(value) ? value : currentValue;
+      }
+
+      if (["factor", "offset", "minimum", "maximum"].includes(field)) {
+        if (!text) return "";
+        const value = Number.parseFloat(text);
+        return Number.isFinite(value) ? value : currentValue;
+      }
+
+      return text;
+    }
+
+    function setEditButtonState(button, enabled, activeText = "Done", inactiveText = "Edit") {
+      if (!button) return;
+      button.classList.toggle("active", enabled);
+      button.textContent = enabled ? activeText : inactiveText;
+    }
+
+    function renderMessages() {
+      const query = messageSearch.value.trim().toLowerCase();
+      messageTbody.innerHTML = "";
+      const filtered = state.messages.filter((msg) => {
+        if (!query) return true;
+        return (
+          textIncludes(msg.name, query) ||
+          textIncludes(msg.id_decimal, query) ||
+          textIncludes(msg.id_hex, query) ||
+          textIncludes(msg.tx_node, query) ||
+          textIncludes(msg.comment, query)
+        );
+      });
+
+      const editableFields = new Set([
+        "id_decimal", "id_hex", "frame_format", "brs", "dlc", "tx_node", "comment", "attributes",
+      ]);
+
+      for (const msg of filtered) {
+        const sourceIndex = state.messages.indexOf(msg);
+        if (sourceIndex < 0) continue;
+        const row = document.createElement("tr");
+        if (msg.name === state.selectedMessageName) row.classList.add("selected");
+        row.dataset.messageIndex = String(sourceIndex);
+        row.innerHTML = `
+          <td data-field="name" title="${esc(msg.name)}">${esc(msg.name)}</td>
+          <td data-field="id_decimal">${esc(msg.id_decimal)}</td>
+          <td data-field="id_hex">${esc(msg.id_hex)}</td>
+          <td data-field="frame_format">${esc(msg.frame_format)}</td>
+          <td data-field="brs">${msg.brs ? "Yes" : "---"}</td>
+          <td data-field="dlc">${esc(msg.dlc)}</td>
+          <td data-field="tx_node" title="${esc(msg.tx_node)}">${esc(msg.tx_node)}</td>
+          <td data-field="comment" title="${esc(msg.comment)}">${esc(msg.comment)}</td>
+          <td data-field="attributes" title="${esc(msg.attributes)}">${esc(msg.attributes)}</td>
+        `;
+
+        row.addEventListener("click", () => selectMessage(msg.name));
+
+        if (state.messageEditMode) {
+          row.querySelectorAll("td[data-field]").forEach((cell) => {
+            const field = String(cell.dataset.field || "");
+            if (!editableFields.has(field)) return;
+            cell.contentEditable = "true";
+            cell.classList.add("editable");
+            cell.addEventListener("blur", () => {
+              const current = state.messages[sourceIndex];
+              if (!current) return;
+              const updated = coerceEditableValue(field, cell.textContent, current[field]);
+              current[field] = updated;
+              if (field === "brs") {
+                cell.textContent = updated ? "Yes" : "---";
+              } else {
+                cell.textContent = String(updated ?? "");
+              }
+            });
+          });
+        }
+
+        messageTbody.appendChild(row);
+      }
+    }
+
+    function renderSignals() {
+      signalTbody.innerHTML = "";
+      const signalQuery = signalSearch.value.trim().toLowerCase();
+      const selected = state.signalsByMessage[state.selectedMessageName] || [];
+      const filtered = selected.filter((sig) => {
+        if (!signalQuery) return true;
+        return (
+          textIncludes(sig.name, signalQuery) ||
+          textIncludes(sig.type, signalQuery) ||
+          textIncludes(sig.comment, signalQuery) ||
+          textIncludes(sig.unit, signalQuery)
+        );
+      });
+
+      const editableFields = new Set([
+        "name", "type", "byteorder", "mode", "bitpos", "length", "factor", "offset",
+        "minimum", "maximum", "unit", "comment", "values",
+      ]);
+
+      filtered.forEach((sig) => {
+        const sourceIndex = selected.indexOf(sig);
+        if (sourceIndex < 0) return;
+        const row = document.createElement("tr");
+        if (sourceIndex === state.selectedSignalIndex) row.classList.add("selected-signal");
+        row.dataset.signalIndex = String(sourceIndex);
+        row.innerHTML = `
+          <td data-field="name" title="${esc(sig.name)}">${esc(sig.name)}</td>
+          <td data-field="type">${esc(sig.type)}</td>
+          <td data-field="byteorder">${esc(sig.byteorder)}</td>
+          <td data-field="mode">${esc(sig.mode)}</td>
+          <td data-field="bitpos">${esc(sig.bitpos)}</td>
+          <td data-field="length">${esc(sig.length)}</td>
+          <td data-field="factor">${esc(sig.factor)}</td>
+          <td data-field="offset">${esc(sig.offset)}</td>
+          <td data-field="minimum">${esc(sig.minimum)}</td>
+          <td data-field="maximum">${esc(sig.maximum)}</td>
+          <td data-field="unit">${esc(sig.unit)}</td>
+          <td data-field="comment" title="${esc(sig.comment)}">${esc(sig.comment)}</td>
+          <td data-field="values" title="${esc(sig.values)}">${esc(sig.values)}</td>
+        `;
+
+        row.addEventListener("click", () => {
+          state.selectedSignalIndex = sourceIndex;
+          renderSignals();
+          buildBitGrid(selected, selected[sourceIndex] || null);
+        });
+
+        if (state.signalEditMode) {
+          row.querySelectorAll("td[data-field]").forEach((cell) => {
+            const field = String(cell.dataset.field || "");
+            if (!editableFields.has(field)) return;
+            cell.contentEditable = "true";
+            cell.classList.add("editable");
+            cell.addEventListener("blur", () => {
+              const current = selected[sourceIndex];
+              if (!current) return;
+              const updated = coerceEditableValue(field, cell.textContent, current[field]);
+              current[field] = updated;
+              cell.textContent = String(updated ?? "");
+              if (field === "bitpos" || field === "length") {
+                buildBitGrid(selected, selected[state.selectedSignalIndex] || null);
+              }
+            });
+          });
+        }
+
+        signalTbody.appendChild(row);
+      });
+    }
+
+    function syncEditToggles() {
+      setEditButtonState(toggleMessageEditBtn, state.messageEditMode);
+      setEditButtonState(toggleSignalEditBtn, state.signalEditMode);
+    }
+
+    function buildBitGrid(signals, focusSignal = null) {
+      const used = new Set();
+      const focus = new Set();
+      const focusBytes = new Set();
+      for (const sig of signals || []) {
+        const start = Number(sig.bitpos);
+        const length = Number(sig.length);
+        if (!Number.isFinite(start) || !Number.isFinite(length) || length <= 0) continue;
+        for (let i = 0; i < length; i++) {
+          const idx = start + i;
+          if (idx >= 0 && idx < 64) used.add(idx);
+        }
+      }
+
+      if (focusSignal) {
+        const start = Number(focusSignal.bitpos);
+        const length = Number(focusSignal.length);
+        if (Number.isFinite(start) && Number.isFinite(length) && length > 0) {
+          for (let i = 0; i < length; i++) {
+            const idx = start + i;
+            if (idx >= 0 && idx < 64) {
+              focus.add(idx);
+              focusBytes.add(Math.floor(idx / 8));
+            }
+          }
+        }
+      }
+
+      let html = "<thead><tr><th>Byte</th>";
+      for (let bit = 7; bit >= 0; bit--) {
+        html += `<th${focus.size ? " class=\"byte-focus\"" : ""}>${bit}</th>`;
+      }
+      html += "</tr></thead><tbody>";
+      for (let byteIndex = 0; byteIndex < 8; byteIndex++) {
+        html += `<tr><th${focusBytes.has(byteIndex) ? " class=\"byte-focus\"" : ""}>${byteIndex}</th>`;
+        for (let bit = 7; bit >= 0; bit--) {
+          const absBit = byteIndex * 8 + bit;
+          const classes = [];
+          classes.push(used.has(absBit) ? "bit-used" : "bit-empty");
+          if (focus.has(absBit)) classes.push("bit-focus");
+          html += `<td class="${classes.join(" ")}"></td>`;
+        }
+        html += "</tr>";
+      }
+      html += "</tbody>";
+      bitGrid.innerHTML = html;
+    }
+
+    function selectMessage(name) {
+      state.selectedMessageName = name || "";
+      state.selectedSignalIndex = -1;
+      renderMessages();
+      renderSignals();
+      buildBitGrid(state.signalsByMessage[state.selectedMessageName] || [], null);
+    }
+
+    function resetStudio() {
+      state.messages = [];
+      state.signalsByMessage = {};
+      state.selectedMessageName = "";
+      state.selectedSignalIndex = -1;
+      messageTbody.innerHTML = "";
+      signalTbody.innerHTML = "";
+      bitGrid.innerHTML = "";
+    }
+
+    function updateStudioVisibility() {
+      if (isDbcFile()) dbcStudio.classList.remove("hidden");
+      else dbcStudio.classList.add("hidden");
+    }
+
+    function setFileOptions(files, preferredFile = "") {
+      fileSelect.innerHTML = "";
+      if (!files.length) {
+        const fallback = document.createElement("option");
+        fallback.value = "";
+        fallback.textContent = "No files found";
+        fileSelect.appendChild(fallback);
+        return;
+      }
+
+      for (const fileName of files) {
+        const option = document.createElement("option");
+        option.value = fileName;
+        option.textContent = fileName;
+        fileSelect.appendChild(option);
+      }
+
+      if (preferredFile && files.includes(preferredFile)) {
+        fileSelect.value = preferredFile;
+      } else if (fileSelect.options.length > 0) {
+        fileSelect.selectedIndex = 0;
+      }
+    }
+
+    function refreshRailSummary() {
+      if (railFilesMeta) {
+        if (state.loadingFiles) {
+          railFilesMeta.textContent = "Loading files from S3...";
+        } else if (!state.files.length) {
+          railFilesMeta.textContent = "No files available.";
+        } else {
+          const truncText = state.filesTruncated ? " (showing first page)" : "";
+          railFilesMeta.textContent = `${state.filesCount || state.files.length} file(s) found${truncText}.`;
+        }
+      }
+
+      if (railFileList) {
+        railFileList.innerHTML = "";
+        if (!state.files.length) {
+          const empty = document.createElement("li");
+          empty.textContent = "No files available.";
+          railFileList.appendChild(empty);
+          return;
+        }
+
+        const filesToRender = state.files.slice(0, 200);
+        for (const file of filesToRender) {
+          const fileName = String(file?.name || "").trim();
+          if (!fileName) continue;
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "rail-file-btn";
+          if (fileName === fileSelect.value) btn.classList.add("active");
+          btn.textContent = fileName;
+          btn.addEventListener("click", async () => {
+            if (state.loading || state.loadingFiles) return;
+            fileSelect.value = fileName;
+            fileSelect.dispatchEvent(new Event("change"));
+            await loadConfig();
+          });
+          li.appendChild(btn);
+          railFileList.appendChild(li);
+        }
+
+        if (state.files.length > filesToRender.length) {
+          const more = document.createElement("li");
+          more.textContent = `...${state.files.length - filesToRender.length} more`;
+          railFileList.appendChild(more);
+        }
+      }
+    }
+
+    async function loadFilesForDevice(preferredFile = "") {
+      const device = (deviceSelect.value || "").trim();
+      state.loadingFiles = true;
+      state.files = [];
+      state.filesCount = 0;
+      state.filesTruncated = false;
+      setFileOptions([], "");
+      refreshRailSummary();
+      if (!device) {
+        state.loadingFiles = false;
+        refreshRailSummary();
+        return;
+      }
+
+      try {
+        const payload = await fetchJson(
+          `/ops/rpi/files?device=${encodeURIComponent(device)}`,
+          { timeoutMs: 30000 }
+        );
+        const rawFiles = Array.isArray(payload.files) ? payload.files : [];
+        state.files = rawFiles
+          .map((entry) => {
+            if (typeof entry === "string") return { name: entry };
+            if (entry && typeof entry === "object") return { name: String(entry.name || "") };
+            return { name: "" };
+          })
+          .filter((entry) => entry.name.trim().length > 0);
+        state.filesCount = Number(payload.count || state.files.length);
+        state.filesTruncated = Boolean(payload.truncated);
+
+        const fileNames = state.files.map((entry) => entry.name);
+        setFileOptions(fileNames, preferredFile);
+        if (!fileNames.length) {
+          setStatus(`No files found in ${device}.`, "warn");
+        } else {
+          setStatus(`Loaded ${fileNames.length} files for ${device}.`, "ok");
+        }
+      } catch (error) {
+        setStatus(`Unable to load files from S3: ${error.message}`, "error");
+        state.files = [];
+        state.filesCount = 0;
+        state.filesTruncated = false;
+        setFileOptions([], "");
+      } finally {
+        state.loadingFiles = false;
+        refreshRailSummary();
+      }
+    }
+
+    async function loadDevices() {
+      const payload = await fetchJson("/ops/rpi/devices");
+      const devices = Array.isArray(payload.devices) ? payload.devices : [];
+      deviceSelect.innerHTML = "";
+      if (!devices.length) {
+        const fallback = document.createElement("option");
+        fallback.value = "";
+        fallback.textContent = "No devices found";
+        deviceSelect.appendChild(fallback);
+        setFileOptions([], "");
+        state.files = [];
+        state.filesCount = 0;
+        state.filesTruncated = false;
+        state.loadingFiles = false;
+        refreshRailSummary();
+        return;
+      }
+      for (const dev of devices) {
+        const option = document.createElement("option");
+        option.value = String(dev);
+        option.textContent = String(dev);
+        deviceSelect.appendChild(option);
+      }
+      const params = new URLSearchParams(window.location.search);
+      const requested = (params.get("device") || "").trim();
+      if (requested && devices.includes(requested)) {
+        deviceSelect.value = requested;
+      }
+      const requestedFile = (params.get("file") || "").trim();
+      await loadFilesForDevice(requestedFile);
+    }
+
+    async function parseDbcFromEditor() {
+      if (!isDbcFile()) {
+        resetStudio();
+        return;
+      }
+      const payload = await fetchJson("/ops/rpi/dbc/parse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: editor.value || "" }),
+      });
+      const messages = Array.isArray(payload.messages) ? payload.messages : [];
+      const signals = payload.signals_by_message && typeof payload.signals_by_message === "object"
+        ? payload.signals_by_message
+        : {};
+      state.messages = messages;
+      state.signalsByMessage = signals;
+      const nextMessage = state.selectedMessageName && messages.some((m) => m.name === state.selectedMessageName)
+        ? state.selectedMessageName
+        : (messages[0] ? messages[0].name : "");
+      selectMessage(nextMessage);
+      setStatus(`DBC parsed: ${payload.message_count || messages.length} messages, ${payload.signal_count || 0} signals.`, "ok");
+    }
+
+    async function loadConfig() {
+      const device = deviceSelect.value;
+      const file = fileSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+      if (!file) {
+        setStatus("Select a config file first.", "warn");
+        return;
+      }
+      setBusy(true);
+      setStatus(`Loading ${file} from ${device} ...`);
+      try {
+        const payload = await fetchJson(
+          `/ops/rpi/config?device=${encodeURIComponent(device)}&file=${encodeURIComponent(file)}`
+        );
+        editor.value = String(payload.content || "");
+        activeKey.innerHTML = `<strong>S3 Key:</strong>${payload.s3_key || "-"}`;
+        lastModified.innerHTML = `<strong>Last Modified:</strong>${payload.last_modified || "-"}`;
+        updateStudioVisibility();
+        if (isDbcFile()) {
+          await parseDbcFromEditor();
+        } else {
+          resetStudio();
+          setStatus(`Loaded ${file}. Edit and save when ready.`, "ok");
+        }
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function saveConfig() {
+      const device = deviceSelect.value;
+      const file = fileSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+      if (!file) {
+        setStatus("Select a config file first.", "warn");
+        return;
+      }
+      setBusy(true);
+      setStatus(`Saving ${file} to ${device} ...`);
+      try {
+        await fetchJson("/ops/rpi/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            device,
+            file,
+            content: editor.value || "",
+          }),
+        });
+        setStatus(`Saved ${file} to ${device}.`, "ok");
+        if (isDbcFile()) {
+          await parseDbcFromEditor();
+        }
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function sanitizeFileName(rawName) {
+      const trimmed = String(rawName || "").trim();
+      if (!trimmed) return "";
+      if (trimmed.includes("/") || trimmed.includes("\\") || trimmed.includes("..")) return "";
+      return trimmed;
+    }
+
+    async function createNewFile() {
+      const device = deviceSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+
+      const requestedName = sanitizeFileName(newFileNameInput ? newFileNameInput.value : "");
+      if (!requestedName) {
+        setStatus("Enter a valid filename (no /, \\\\, ..).", "warn");
+        return;
+      }
+
+      setBusy(true);
+      setStatus(`Creating ${requestedName} in ${device} ...`);
+      try {
+        await fetchJson("/ops/rpi/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ device, file: requestedName, content: "" }),
+        });
+        if (newFileNameInput) newFileNameInput.value = "";
+        await loadFilesForDevice(requestedName);
+        fileSelect.value = requestedName;
+        fileSelect.dispatchEvent(new Event("change"));
+        await loadConfig();
+        setStatus(`Created ${requestedName}.`, "ok");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function uploadNewFile() {
+      const device = deviceSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+
+      const file = uploadFileInput && uploadFileInput.files ? uploadFileInput.files[0] : null;
+      if (!file) {
+        setStatus("Choose a local file to upload.", "warn");
+        return;
+      }
+
+      const safeName = sanitizeFileName(file.name);
+      if (!safeName) {
+        setStatus("Invalid uploaded filename.", "warn");
+        return;
+      }
+
+      setBusy(true);
+      setStatus(`Uploading ${safeName} to ${device} ...`);
+      try {
+        const content = await file.text();
+        await fetchJson("/ops/rpi/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ device, file: safeName, content }),
+        });
+        if (uploadFileInput) uploadFileInput.value = "";
+        await loadFilesForDevice(safeName);
+        fileSelect.value = safeName;
+        fileSelect.dispatchEvent(new Event("change"));
+        await loadConfig();
+        setStatus(`Uploaded ${safeName}.`, "ok");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function deleteSelectedFile() {
+      const device = deviceSelect.value;
+      const file = fileSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+      if (!file) {
+        setStatus("Select a file first.", "warn");
+        return;
+      }
+
+      const confirmDelete = window.confirm(`Delete ${file} from ${device}? This cannot be undone.`);
+      if (!confirmDelete) return;
+
+      setBusy(true);
+      setStatus(`Deleting ${file} from ${device} ...`);
+      try {
+        await fetchJson(
+          `/ops/rpi/config?device=${encodeURIComponent(device)}&file=${encodeURIComponent(file)}`,
+          { method: "DELETE" }
+        );
+        editor.value = "";
+        activeKey.innerHTML = "<strong>S3 Key:</strong>-";
+        lastModified.innerHTML = "<strong>Last Modified:</strong>-";
+        resetStudio();
+        await loadFilesForDevice();
+        setStatus(`Deleted ${file}.`, "ok");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function sendAction(action) {
+      const device = deviceSelect.value;
+      if (!device) {
+        setStatus("Select a device first.", "warn");
+        return;
+      }
+      setBusy(true);
+      setStatus(`Sending ${action} to ${device} ...`);
+      try {
+        await fetchJson("/ops/rpi/action", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            device,
+            action,
+            auto_reset_seconds: 10,
+          }),
+        });
+        setStatus(`Action '${action}' sent. Auto reset in 10s.`, "ok");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    loadBtn.addEventListener("click", loadConfig);
+    parseBtn.addEventListener("click", async () => {
+      if (!isDbcFile()) {
+        setStatus("Select a .dbc file to use DBC Studio.", "warn");
+        return;
+      }
+      setBusy(true);
+      setStatus("Parsing DBC from current editor text ...");
+      try {
+        await parseDbcFromEditor();
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+    saveBtn.addEventListener("click", saveConfig);
+    rebootBtn.addEventListener("click", () => sendAction("reboot"));
+    shutdownBtn.addEventListener("click", () => sendAction("poweroff"));
+    createFileBtn.addEventListener("click", createNewFile);
+    uploadFileBtn.addEventListener("click", uploadNewFile);
+    deleteFileBtn.addEventListener("click", deleteSelectedFile);
+    toggleMessageEditBtn.addEventListener("click", () => {
+      state.messageEditMode = !state.messageEditMode;
+      renderMessages();
+      syncEditToggles();
+      setStatus(state.messageEditMode ? "Message table edit mode enabled." : "Message table edit mode disabled.", "info");
+    });
+    toggleSignalEditBtn.addEventListener("click", () => {
+      state.signalEditMode = !state.signalEditMode;
+      renderSignals();
+      syncEditToggles();
+      setStatus(state.signalEditMode ? "Signal table edit mode enabled." : "Signal table edit mode disabled.", "info");
+    });
+    deviceSelect.addEventListener("change", async () => {
+      editor.value = "";
+      activeKey.innerHTML = "<strong>S3 Key:</strong>-";
+      lastModified.innerHTML = "<strong>Last Modified:</strong>-";
+      updateStudioVisibility();
+      resetStudio();
+      try {
+        await loadFilesForDevice();
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+      if (!state.files.length) {
+        setStatus(`No files found for ${deviceSelect.value || "selected device"}.`, "warn");
+      }
+    });
+
+    fileSelect.addEventListener("change", () => {
+      editor.value = "";
+      activeKey.innerHTML = "<strong>S3 Key:</strong>-";
+      lastModified.innerHTML = "<strong>Last Modified:</strong>-";
+      updateStudioVisibility();
+      resetStudio();
+      refreshRailSummary();
+      if (isDbcFile()) setStatus("DBC file selected. Click Load to fetch and parse.");
+      else setStatus("Config file selected. Click Load to fetch content.");
+    });
+
+    messageSearch.addEventListener("input", renderMessages);
+    signalSearch.addEventListener("input", renderSignals);
+
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        saveConfig();
+      }
+    });
+
+    (async () => {
+      try {
+        updateStudioVisibility();
+        syncEditToggles();
+        setFileOptions([], "");
+        refreshRailSummary();
+        await loadDevices();
+        setStatus("Ready. Select file and click Load.");
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    })();
+  </script>
+</body>
+</html>
