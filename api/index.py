@@ -23,11 +23,6 @@ try:
 except Exception:
     cantools = None
 
-try:
-    from mangum import Mangum
-except Exception:
-    Mangum = None
-
 BASE_DIR = Path(__file__).resolve().parents[1]
 STATIC_DIR = BASE_DIR / "static"
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -196,24 +191,29 @@ async def _reset_action_after_delay(device: str, delay_seconds: int) -> None:
         pass
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request) -> HTMLResponse:
+def _render_rpi_page(request: Request) -> HTMLResponse:
     if templates is None:
         return HTMLResponse(
             "<h3 style='font-family:sans-serif'>Template directory not found in deployment bundle.</h3>",
             status_code=500,
         )
-    return templates.TemplateResponse("rpi_config.html", {"request": request})
+    try:
+        return templates.TemplateResponse("rpi_config.html", {"request": request})
+    except Exception as exc:
+        return HTMLResponse(
+            f"<h3 style='font-family:sans-serif'>Template render failed: {exc}</h3>",
+            status_code=500,
+        )
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request) -> HTMLResponse:
+    return _render_rpi_page(request)
 
 
 @app.get("/rpi-config", response_class=HTMLResponse)
 async def rpi_config_page(request: Request) -> HTMLResponse:
-    if templates is None:
-        return HTMLResponse(
-            "<h3 style='font-family:sans-serif'>Template directory not found in deployment bundle.</h3>",
-            status_code=500,
-        )
-    return templates.TemplateResponse("rpi_config.html", {"request": request})
+    return _render_rpi_page(request)
 
 
 @app.get("/overview", response_class=HTMLResponse)
@@ -427,7 +427,3 @@ async def ops_rpi_action(payload: ActionRequest) -> JSONResponse:
         return JSONResponse(content={"error": str(exc)}, status_code=400)
     except (BotoCoreError, ClientError) as exc:
         return JSONResponse(content={"error": f"S3 action update failed: {exc}"}, status_code=500)
-
-
-if Mangum is not None:
-    handler = Mangum(app)
